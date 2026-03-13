@@ -14,15 +14,15 @@ const DEMO=[
 
 function Modal({p,onClose}) {
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className="modal-bg" onClick={onClose}>
       <div style={{
         position:'relative',width:'100%',maxWidth:640,maxHeight:'90vh',overflowY:'auto',
-        borderRadius:24,background:'#0C1018',border:'1px solid rgba(99,179,237,.2)',
+        borderRadius:24,background:'var(--bg1)',border:'1px solid rgba(99,179,237,.2)',
       }} onClick={e=>e.stopPropagation()}>
         {/* Header image area */}
         <div style={{
           height:180,display:'flex',alignItems:'center',justifyContent:'center',
-          background:'linear-gradient(135deg,#07090F,#0C1018)',
+          background:'var(--bg1)',
           borderBottom:'1px solid rgba(255,255,255,.06)',position:'relative',overflow:'hidden',
         }}>
           <div className="dot-grid" style={{position:'absolute',inset:0,opacity:.8}}/>
@@ -34,8 +34,8 @@ function Modal({p,onClose}) {
           }
           <button onClick={onClose} style={{
             position:'absolute',top:16,right:16,width:34,height:34,borderRadius:'50%',
-            background:'rgba(0,0,0,.5)',border:'1px solid rgba(255,255,255,.12)',
-            display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'white'
+            background:'rgba(0,0,0,.35)',border:'1px solid rgba(255,255,255,.12)',
+            display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'var(--t1)'
           }}><X size={15}/></button>
         </div>
 
@@ -43,7 +43,7 @@ function Modal({p,onClose}) {
           <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:16,marginBottom:20}}>
             <div>
               <span className="pill" style={{marginBottom:10,display:'inline-flex',fontSize:10}}>{p.category}</span>
-              <h3 className="syne" style={{fontSize:24,fontWeight:800,color:'white'}}>{p.title}</h3>
+              <h3 className="syne" style={{fontSize:24,fontWeight:800,color:'var(--t1)'}}>{p.title}</h3>
             </div>
             <div style={{display:'flex',gap:8,flexShrink:0}}>
               {p.url&&<a href={p.url} target="_blank" rel="noopener noreferrer" className="btn-outline" style={{padding:'7px 12px'}}><ExternalLink size={14}/></a>}
@@ -54,7 +54,7 @@ function Modal({p,onClose}) {
           <p style={{color:'rgba(148,163,184,.75)',fontSize:15,lineHeight:1.75,marginBottom:24}}>{p.long_description||p.description}</p>
 
           <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:28}}>
-            {(p.tech||[]).map(t=><span key={t} className="badge badge-blue">{t}</span>)}
+            {(p.tech||[]).map(t=><span key={t} className="badge b-blue">{t}</span>)}
           </div>
 
           <button onClick={()=>{onClose();document.getElementById('contacto')?.scrollIntoView({behavior:'smooth'})}}
@@ -75,14 +75,14 @@ export default function Portfolio() {
   const filtered=filter==='Todos'?projects:projects.filter(p=>p.category===filter)
 
   return (
-    <section id="portfolio" style={{position:'relative',padding:'120px 0',background:'#07090F',overflow:'hidden'}}>
+    <section id="portfolio" style={{position:'relative',padding:'120px 0',background:'var(--bg0)',overflow:'hidden'}}>
       <div className="dot-grid" style={{position:'absolute',inset:0,opacity:.45}}/>
       <div style={{position:'absolute',bottom:0,left:'50%',transform:'translateX(-50%)',width:600,height:300,background:'radial-gradient(ellipse,rgba(37,99,235,.08) 0%,transparent 65%)',pointerEvents:'none'}}/>
 
       <div style={{maxWidth:1280,margin:'0 auto',padding:'0 28px',position:'relative',zIndex:1}}>
         <div style={{textAlign:'center',marginBottom:56}}>
           <span className="pill" style={{marginBottom:18,display:'inline-flex'}}><FolderOpen size={11}/>Portfolio</span>
-          <h2 className="syne" style={{fontSize:'clamp(34px,5vw,54px)',fontWeight:800,letterSpacing:'-.025em',color:'white',marginBottom:16}}>
+          <h2 className="syne" style={{fontSize:'clamp(34px,5vw,54px)',fontWeight:800,letterSpacing:'-.025em',color:'var(--t1)',marginBottom:16}}>
             Proyectos <span className="grad-cyan">realizados</span>
           </h2>
           <p style={{color:'rgba(148,163,184,.6)',fontSize:17,maxWidth:460,margin:'0 auto'}}>
@@ -97,7 +97,7 @@ export default function Portfolio() {
               style={{
                 padding:'8px 18px',borderRadius:100,fontSize:13,fontWeight:600,cursor:'pointer',
                 transition:'all .2s',fontFamily:"'Outfit',sans-serif",letterSpacing:'.02em',
-                background:filter===c?'#2563EB':'rgba(255,255,255,.04)',
+                background:filter===c?'var(--kblue)':'rgba(255,255,255,.04)',
                 color:filter===c?'white':'rgba(148,163,184,.65)',
                 border:filter===c?'1px solid rgba(255,255,255,.15)':'1px solid rgba(255,255,255,.07)',
                 boxShadow:filter===c?'0 8px 24px rgba(37,99,235,.3)':'none',
@@ -115,7 +115,7 @@ export default function Portfolio() {
               {/* Thumbnail */}
               <div style={{
                 height:176,display:'flex',alignItems:'center',justifyContent:'center',
-                background:'linear-gradient(135deg,#07090F,#0C1018)',position:'relative',overflow:'hidden',
+                background:'var(--bg1)',position:'relative',overflow:'hidden',
               }}>
                 <div className="dot-grid" style={{position:'absolute',inset:0,opacity:.9}}/>
                 {p.image_url
@@ -125,7 +125,7 @@ export default function Portfolio() {
                   </div>
                 }
                 {p.featured&&(
-                  <span className="badge badge-blue" style={{position:'absolute',top:12,left:12,zIndex:2}}>Destacado</span>
+                  <span className="badge b-blue" style={{position:'absolute',top:12,left:12,zIndex:2}}>Destacado</span>
                 )}
                 {/* Hover overlay */}
                 <div style={{
@@ -137,7 +137,7 @@ export default function Portfolio() {
                   onMouseLeave={e=>e.currentTarget.style.background='rgba(7,9,15,0)'}>
                   <span style={{
                     opacity:0,padding:'8px 18px',borderRadius:10,background:'rgba(37,99,235,.9)',
-                    fontSize:13,fontWeight:700,color:'white',transition:'opacity .25s',
+                    fontSize:13,fontWeight:700,color:'var(--t1)',transition:'opacity .25s',
                   }}
                     onMouseEnter={e=>{e.currentTarget.style.opacity='1';e.currentTarget.parentElement.style.background='rgba(7,9,15,.55)'}}
                     onMouseLeave={e=>{e.currentTarget.style.opacity='0';e.currentTarget.parentElement.style.background='rgba(7,9,15,0)'}}>
@@ -152,10 +152,10 @@ export default function Portfolio() {
                   <span style={{fontSize:11,fontWeight:700,letterSpacing:'.1em',textTransform:'uppercase',color:'#63B3ED'}}>{p.category}</span>
                   {p.url&&<ExternalLink size={12} style={{color:'rgba(148,163,184,.3)'}}/>}
                 </div>
-                <h3 className="syne" style={{fontSize:17,fontWeight:700,color:'white',marginBottom:8}}>{p.title}</h3>
+                <h3 className="syne" style={{fontSize:17,fontWeight:700,color:'var(--t1)',marginBottom:8}}>{p.title}</h3>
                 <p style={{fontSize:13.5,color:'rgba(148,163,184,.58)',lineHeight:1.6,marginBottom:14,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>{p.description}</p>
                 <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-                  {(p.tech||[]).slice(0,3).map(t=><span key={t} className="badge badge-blue">{t}</span>)}
+                  {(p.tech||[]).slice(0,3).map(t=><span key={t} className="badge b-blue">{t}</span>)}
                   {(p.tech||[]).length>3&&<span style={{fontSize:11,color:'rgba(148,163,184,.38)'}}>+{p.tech.length-3}</span>}
                 </div>
               </div>

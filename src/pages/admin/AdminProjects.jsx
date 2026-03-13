@@ -25,18 +25,18 @@ function ProjectForm({ initial, onSave, onCancel }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Título *</label>
-            <input className="kv-input" placeholder="Nombre del proyecto" value={form.title} onChange={e => set('title', e.target.value)} required/>
+            <input className="inp" placeholder="Nombre del proyecto" value={form.title} onChange={e => set('title', e.target.value)} required/>
           </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Categoría</label>
-            <select className="kv-input" value={form.category} onChange={e => set('category', e.target.value)}>
+            <select className="inp" value={form.category} onChange={e => set('category', e.target.value)}>
               {CATS.map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
         </div>
         <div>
           <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Descripción corta *</label>
-          <input className="kv-input" value={form.description} onChange={e => set('description', e.target.value)} required/>
+          <input className="inp" value={form.description} onChange={e => set('description', e.target.value)} required/>
         </div>
         <div>
           <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Descripción completa (modal)</label>
@@ -44,16 +44,16 @@ function ProjectForm({ initial, onSave, onCancel }) {
         </div>
         <div>
           <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Tecnologías (separadas por coma)</label>
-          <input className="kv-input" placeholder="React, Node.js, PostgreSQL" value={form.tech} onChange={e => set('tech', e.target.value)}/>
+          <input className="inp" placeholder="React, Node.js, PostgreSQL" value={form.tech} onChange={e => set('tech', e.target.value)}/>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>URL del proyecto</label>
-            <input className="kv-input" placeholder="https://..." value={form.url} onChange={e => set('url', e.target.value)}/>
+            <input className="inp" placeholder="https://..." value={form.url} onChange={e => set('url', e.target.value)}/>
           </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>URL imagen</label>
-            <input className="kv-input" placeholder="https://imagen.jpg" value={form.image_url} onChange={e => set('image_url', e.target.value)}/>
+            <input className="inp" placeholder="https://imagen.jpg" value={form.image_url} onChange={e => set('image_url', e.target.value)}/>
           </div>
         </div>
         <label className="flex items-center gap-3 cursor-pointer">
@@ -61,10 +61,10 @@ function ProjectForm({ initial, onSave, onCancel }) {
           <span className="text-sm font-medium" style={{ color:'rgba(160,176,200,.75)' }}>Marcar como destacado</span>
         </label>
         <div className="flex gap-3 pt-2">
-          <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2 px-6 py-3 text-sm disabled:opacity-50">
+          <button type="submit" disabled={saving} className="btn btn-p flex items-center gap-2 px-6 py-3 text-sm disabled:opacity-50">
             <Save size={14}/>{saving ? 'Guardando...' : 'Guardar'}
           </button>
-          <button type="button" onClick={onCancel} className="btn-secondary flex items-center gap-2 px-5 py-3 text-sm">
+          <button type="button" onClick={onCancel} className="btn btn-g flex items-center gap-2 px-5 py-3 text-sm">
             <X size={14}/>Cancelar
           </button>
         </div>
@@ -94,7 +94,7 @@ export default function AdminProjects() {
           <p style={{ color:'rgba(160,176,200,.5)' }}>{projects.length} proyectos</p>
         </div>
         {!showForm && !editing && (
-          <button onClick={() => setShowForm(true)} className="btn-primary flex items-center gap-2 px-5 py-3 text-sm">
+          <button onClick={() => setShowForm(true)} className="btn btn-p flex items-center gap-2 px-5 py-3 text-sm">
             <Plus size={15}/>Nuevo proyecto
           </button>
         )}
@@ -116,7 +116,7 @@ export default function AdminProjects() {
         <div className="py-20 text-center rounded-2xl" style={{ border:'1px dashed rgba(34,39,249,.18)', color:'rgba(160,176,200,.38)' }}>
           <FolderOpen size={38} className="mx-auto mb-3 opacity-25"/>
           <p className="text-sm mb-3">No hay proyectos todavía</p>
-          <button onClick={() => setShowForm(true)} className="btn-secondary px-4 py-2 text-sm">Agregar el primero</button>
+          <button onClick={() => setShowForm(true)} className="btn btn-g px-4 py-2 text-sm">Agregar el primero</button>
         </div>
       ) : (
         <div className="space-y-2.5">
@@ -138,7 +138,7 @@ export default function AdminProjects() {
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button onClick={() => { setEditing(p); setShowForm(false) }}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center btn-secondary"><Pencil size={13}/></button>
+                  className="w-8 h-8 rounded-lg flex items-center justify-center btn btn-g"><Pencil size={13}/></button>
                 <button onClick={() => handleDelete(p.id)}
                   className="w-8 h-8 rounded-lg flex items-center justify-center"
                   style={{ background:'rgba(248,113,113,.1)', border:'1px solid rgba(248,113,113,.2)', color:'#f87171' }}>

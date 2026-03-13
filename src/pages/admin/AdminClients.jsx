@@ -8,11 +8,11 @@ import { es } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 
 const STATUSES = [
-  { value:'development', label:'En desarrollo', cls:'badge-blue'   },
-  { value:'delivered',   label:'Entregado',      cls:'badge-gray'   },
-  { value:'active',      label:'Activo/Pagado',  cls:'badge-green'  },
-  { value:'overdue',     label:'Pago vencido',   cls:'badge-yellow' },
-  { value:'suspended',   label:'Suspendido',     cls:'badge-red'    },
+  { value:'development', label:'En desarrollo', cls:'badge b-blue'   },
+  { value:'delivered',   label:'Entregado',      cls:'badge b-gray'   },
+  { value:'active',      label:'Activo/Pagado',  cls:'badge b-green'  },
+  { value:'overdue',     label:'Pago vencido',   cls:'badge b-yellow' },
+  { value:'suspended',   label:'Suspendido',     cls:'badge b-red'    },
 ]
 const CURRENCIES = ['ARS','USD','EUR']
 
@@ -36,7 +36,7 @@ function ClientForm({ initial, onSave, onCancel }) {
   }
 
   return (
-    <div className="modal-backdrop" onClick={onCancel}>
+    <div className="modal-bg" onClick={onCancel}>
       <div className="relative w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-2xl"
         style={{ background:'#0A1525', border:'1px solid rgba(34,39,249,.25)' }}
         onClick={e => e.stopPropagation()}>
@@ -57,7 +57,7 @@ function ClientForm({ initial, onSave, onCancel }) {
               ].map(([label,type,ph,key,req]) => (
                 <div key={key}>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>{label}</label>
-                  <input type={type} className="kv-input" placeholder={ph} value={form[key]}
+                  <input type={type} className="inp" placeholder={ph} value={form[key]}
                     onChange={e => set(key, e.target.value)} required={req}/>
                 </div>
               ))}
@@ -70,12 +70,12 @@ function ClientForm({ initial, onSave, onCancel }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>URL del sitio entregado</label>
-                <input type="url" className="kv-input" placeholder="https://cliente.com" value={form.site_url}
+                <input type="url" className="inp" placeholder="https://cliente.com" value={form.site_url}
                   onChange={e => set('site_url', e.target.value)}/>
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Estado</label>
-                <select className="kv-input" value={form.payment_status} onChange={e => set('payment_status', e.target.value)}>
+                <select className="inp" value={form.payment_status} onChange={e => set('payment_status', e.target.value)}>
                   {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
@@ -94,18 +94,18 @@ function ClientForm({ initial, onSave, onCancel }) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
                 <div className="sm:col-span-1">
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Precio</label>
-                  <input type="number" className="kv-input" placeholder="15000"
+                  <input type="number" className="inp" placeholder="15000"
                     value={form.maintenance_price} onChange={e => set('maintenance_price', e.target.value)}/>
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Moneda</label>
-                  <select className="kv-input" value={form.currency} onChange={e => set('currency', e.target.value)}>
+                  <select className="inp" value={form.currency} onChange={e => set('currency', e.target.value)}>
                     {CURRENCIES.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Próximo vencimiento</label>
-                  <input type="date" className="kv-input" value={form.payment_due_date}
+                  <input type="date" className="inp" value={form.payment_due_date}
                     onChange={e => set('payment_due_date', e.target.value)}/>
                 </div>
               </div>
@@ -114,11 +114,11 @@ function ClientForm({ initial, onSave, onCancel }) {
 
           <div className="flex gap-3 pt-1">
             <button type="submit" disabled={saving}
-              className="btn-primary flex items-center gap-2 px-6 py-3 text-sm disabled:opacity-50">
+              className="btn btn-p flex items-center gap-2 px-6 py-3 text-sm disabled:opacity-50">
               <Save size={14}/>{saving ? 'Guardando...' : 'Guardar cliente'}
             </button>
             <button type="button" onClick={onCancel}
-              className="btn-secondary px-5 py-3 text-sm flex items-center gap-2">
+              className="btn btn-g px-5 py-3 text-sm flex items-center gap-2">
               <X size={14}/>Cancelar
             </button>
           </div>
@@ -189,7 +189,7 @@ function ClientDetail({ client, onClose, onUpdate }) {
   const daysUntil = client.payment_due_date ? differenceInDays(parseISO(client.payment_due_date), new Date()) : null
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className="modal-bg" onClick={onClose}>
       <div className="relative w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-2xl"
         style={{ background:'#0A1525', border:'1px solid rgba(34,39,249,.22)' }}
         onClick={e => e.stopPropagation()}>
@@ -308,7 +308,7 @@ function ClientDetail({ client, onClose, onUpdate }) {
                 onChange={e => setNote(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleAddNote()}/>
               <button onClick={handleAddNote} disabled={addingNote || !note.trim()}
-                className="btn-primary px-4 py-2 text-sm flex-shrink-0">
+                className="btn btn-p px-4 py-2 text-sm flex-shrink-0">
                 <Plus size={15}/>
               </button>
             </div>
@@ -387,7 +387,7 @@ export default function AdminClients() {
           <p style={{ color:'rgba(160,176,200,.5)' }}>{clients.length} clientes registrados</p>
         </div>
         <button onClick={() => setShowForm(true)}
-          className="btn-primary flex items-center gap-2 px-5 py-3 text-sm"
+          className="btn btn-p flex items-center gap-2 px-5 py-3 text-sm"
           style={{ boxShadow:'0 0 20px rgba(34,39,249,.28)' }}>
           <Plus size={15}/>Nuevo cliente
         </button>
@@ -400,7 +400,7 @@ export default function AdminClients() {
         <div className="flex gap-2 flex-wrap">
           {[{ value:'all', label:'Todos' }, ...STATUSES].map(s => (
             <button key={s.value} onClick={() => setFilterStatus(s.value)}
-              className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${filterStatus === s.value ? 'btn-primary' : 'btn-secondary'}`}>
+              className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${filterStatus === s.value ? 'btn btn-p' : 'btn btn-g'}`}>
               {s.label}
             </button>
           ))}
@@ -416,11 +416,11 @@ export default function AdminClients() {
         <div className="py-20 text-center rounded-2xl" style={{ border:'1px dashed rgba(34,39,249,.18)', color:'rgba(160,176,200,.38)' }}>
           <Users size={38} className="mx-auto mb-3 opacity-25"/>
           <p className="text-sm mb-3">{clients.length === 0 ? 'No hay clientes todavía' : 'Sin resultados para ese filtro'}</p>
-          {clients.length === 0 && <button onClick={() => setShowForm(true)} className="btn-secondary px-4 py-2 text-sm">Agregar el primero</button>}
+          {clients.length === 0 && <button onClick={() => setShowForm(true)} className="btn btn-g px-4 py-2 text-sm">Agregar el primero</button>}
         </div>
       ) : (
         <div className="card overflow-hidden">
-          <table className="kv-table">
+          <table className="tbl">
             <thead><tr>
               <th>Cliente</th><th>Sitio</th><th>Mantenimiento</th><th>Vencimiento</th><th>Estado</th><th></th>
             </tr></thead>
@@ -468,7 +468,7 @@ export default function AdminClients() {
                     <td onClick={e => e.stopPropagation()}>
                       <div className="flex gap-2">
                         <button onClick={() => { setEditing(c); setShowForm(false) }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center btn-secondary">
+                          className="w-8 h-8 rounded-lg flex items-center justify-center btn btn-g">
                           <Pencil size={13}/>
                         </button>
                         <button onClick={() => handleDelete(c.id)}

@@ -54,7 +54,7 @@ export default function AdminSettings() {
           <p style={{ color:'rgba(160,176,200,.5)' }}>Textos, contacto y EmailJS</p>
         </div>
         <button onClick={handleSave} disabled={saving}
-          className="btn-primary flex items-center gap-2 px-5 py-3 text-sm disabled:opacity-50">
+          className="btn btn-p flex items-center gap-2 px-5 py-3 text-sm disabled:opacity-50">
           <Save size={14}/>{saving ? 'Guardando...' : 'Guardar todo'}
         </button>
       </div>
@@ -70,7 +70,7 @@ export default function AdminSettings() {
               {[['stats_projects','Proyectos'],['stats_satisfaction','Satisfacción'],['stats_support','Soporte']].map(([k,l]) => (
                 <div key={k}>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>{l}</label>
-                  <input className="kv-input" value={config[k]} onChange={e => set(k, e.target.value)}/>
+                  <input className="inp" value={config[k]} onChange={e => set(k, e.target.value)}/>
                 </div>
               ))}
             </div>
@@ -85,7 +85,7 @@ export default function AdminSettings() {
             ].map(([k,l,ph]) => (
               <div key={k}>
                 <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>{l}</label>
-                <input className="kv-input" placeholder={ph} value={config[k]} onChange={e => set(k, e.target.value)}/>
+                <input className="inp" placeholder={ph} value={config[k]} onChange={e => set(k, e.target.value)}/>
               </div>
             ))}
           </div>
@@ -115,7 +115,7 @@ export default function AdminSettings() {
       {/* Floating save */}
       <div className="fixed bottom-6 right-6 z-50">
         <button onClick={handleSave} disabled={saving}
-          className="btn-primary flex items-center gap-2 px-5 py-3 text-sm disabled:opacity-50"
+          className="btn btn-p flex items-center gap-2 px-5 py-3 text-sm disabled:opacity-50"
           style={{ boxShadow:'0 8px 28px rgba(34,39,249,.45)' }}>
           <Save size={15}/>{saving ? 'Guardando...' : 'Guardar todo'}
         </button>
