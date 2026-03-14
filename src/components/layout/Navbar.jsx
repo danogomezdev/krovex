@@ -39,7 +39,7 @@ export default function Navbar() {
           <KrovexLogo size={32} textSize="lg"/>
         </Link>
 
-        <nav style={{alignItems:'center',gap:40,display:'flex'}} className="hidden md:flex">
+        <nav style={{alignItems:'center',gap:40,display:'flex'}} className="desktop-nav">
           {LINKS.map(l=>(
             <button key={l.id} onClick={()=>go(l.id)} style={{
               fontSize:13,fontWeight:500,color:'var(--t3)',
@@ -69,11 +69,11 @@ export default function Navbar() {
             {isLight ? <Moon size={15}/> : <Sun size={15}/>}
           </button>
 
-          <button onClick={()=>go('contacto')} className="btn btn-p hidden md:inline-flex" style={{fontSize:13,padding:'10px 22px',letterSpacing:'.06em',textTransform:'uppercase'}}>
+          <button onClick={()=>go('contacto')} className="btn btn-p desktop-only" style={{fontSize:13,padding:'10px 22px',letterSpacing:'.06em',textTransform:'uppercase'}}>
             Contacto
           </button>
 
-          <button onClick={()=>setOpen(!open)} className="md:hidden" style={{background:'none',border:'none',cursor:'pointer',color:'var(--t1)',padding:6}}>
+          <button onClick={()=>setOpen(!open)} className="mobile-menu-btn" style={{background:'none',border:'none',cursor:'pointer',color:'var(--t1)',padding:6}}>
             {open?<X size={20}/>:<Menu size={20}/>}
           </button>
         </div>
