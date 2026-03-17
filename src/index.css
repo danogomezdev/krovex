@@ -428,3 +428,40 @@ body {
 @media (min-width: 768px) {
   .mobile-menu-btn { display: none !important; }
 }
+/* ══════════════════════════
+   TAILWIND INPUT FIX — admin modals
+══════════════════════════ */
+input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+textarea,
+select {
+  color: var(--t1) !important;
+  background-color: rgba(255,255,255,.03) !important;
+  border-color: var(--b0) !important;
+}
+input:not([type="checkbox"]):not([type="radio"])::placeholder,
+textarea::placeholder {
+  color: var(--t4) !important;
+}
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+  border-color: var(--kblue) !important;
+  background-color: rgba(37,99,235,.04) !important;
+  outline: none !important;
+}
+select option {
+  background: var(--bg2);
+  color: var(--t1);
+}
+
+[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  color: var(--t1) !important;
+  background-color: rgba(37,99,235,.03) !important;
+  border-color: rgba(37,99,235,.14) !important;
+}
+[data-theme="light"] select option {
+  background: white;
+  color: var(--t1);
+}
