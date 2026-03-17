@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Plus, Pencil, Trash2, X, Save, Users, ExternalLink, AlertTriangle,
-         CheckCircle, Clock, Ban, RotateCcw, Mail, StickyNote, ChevronDown, ChevronUp, Send } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Save, Users, ExternalLink,
+         Ban, RotateCcw, StickyNote, Send } from 'lucide-react'
 import { getClients, createClient, updateClient, deleteClient, addNote, deleteNote } from '../../lib/db'
 import { sendPaymentWarning, sendOverdueNotice, sendSuspensionNotice } from '../../lib/email'
 import { format, parseISO, isPast, differenceInDays } from 'date-fns'
@@ -22,6 +22,18 @@ const EMPTY_CLIENT = {
   payment_due_date:'', payment_status:'development', notes:''
 }
 
+const inputStyle = {
+  width:'100%',
+  background:'rgba(255,255,255,.06)',
+  border:'1px solid rgba(255,255,255,.1)',
+  borderRadius:6,
+  padding:'10px 14px',
+  color:'#F8FAFF',
+  fontFamily:'DM Sans, sans-serif',
+  fontSize:14,
+  outline:'none',
+}
+
 // ── Form modal ─────────────────────────────────────────────────────────
 function ClientForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_CLIENT)
@@ -40,10 +52,12 @@ function ClientForm({ initial, onSave, onCancel }) {
       <div className="relative w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-2xl"
         style={{ background:'#0A1525', border:'1px solid rgba(34,39,249,.25)' }}
         onClick={e => e.stopPropagation()}>
+
         <div className="flex items-center justify-between p-6 border-b" style={{ borderColor:'rgba(255,255,255,.07)' }}>
           <h2 className="text-lg font-black text-white">{initial ? 'Editar cliente' : 'Nuevo cliente'}</h2>
           <button onClick={onCancel} style={{ color:'rgba(160,176,200,.5)' }}><X size={18}/></button>
         </div>
+
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
 
           {/* Datos personales */}
@@ -57,7 +71,7 @@ function ClientForm({ initial, onSave, onCancel }) {
               ].map(([label,type,ph,key,req]) => (
                 <div key={key}>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>{label}</label>
-                  <input type={type} className="inp" placeholder={ph} value={form[key]}
+                  <input type={type} style={inputStyle} placeholder={ph} value={form[key]}
                     onChange={e => set(key, e.target.value)} required={req}/>
                 </div>
               ))}
@@ -70,13 +84,13 @@ function ClientForm({ initial, onSave, onCancel }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>URL del sitio entregado</label>
-                <input type="url" className="inp" placeholder="https://cliente.com" value={form.site_url}
+                <input type="url" style={inputStyle} placeholder="https://cliente.com" value={form.site_url}
                   onChange={e => set('site_url', e.target.value)}/>
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Estado</label>
-                <select className="inp" value={form.payment_status} onChange={e => set('payment_status', e.target.value)}>
-                  {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                <select style={{...inputStyle, cursor:'pointer'}} value={form.payment_status} onChange={e => set('payment_status', e.target.value)}>
+                  {STATUSES.map(s => <option key={s.value} value={s.value} style={{background:'#0E1220',color:'#F8FAFF'}}>{s.label}</option>)}
                 </select>
               </div>
             </div>
@@ -94,18 +108,18 @@ function ClientForm({ initial, onSave, onCancel }) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
                 <div className="sm:col-span-1">
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Precio</label>
-                  <input type="number" className="inp" placeholder="15000"
+                  <input type="number" style={inputStyle} placeholder="15000"
                     value={form.maintenance_price} onChange={e => set('maintenance_price', e.target.value)}/>
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Moneda</label>
-                  <select className="inp" value={form.currency} onChange={e => set('currency', e.target.value)}>
-                    {CURRENCIES.map(c => <option key={c}>{c}</option>)}
+                  <select style={{...inputStyle, cursor:'pointer'}} value={form.currency} onChange={e => set('currency', e.target.value)}>
+                    {CURRENCIES.map(c => <option key={c} style={{background:'#0E1220',color:'#F8FAFF'}}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Próximo vencimiento</label>
-                  <input type="date" className="inp" value={form.payment_due_date}
+                  <input type="date" style={inputStyle} value={form.payment_due_date}
                     onChange={e => set('payment_due_date', e.target.value)}/>
                 </div>
               </div>
@@ -194,7 +208,6 @@ function ClientDetail({ client, onClose, onUpdate }) {
         style={{ background:'#0A1525', border:'1px solid rgba(34,39,249,.22)' }}
         onClick={e => e.stopPropagation()}>
 
-        {/* Header */}
         <div className="p-6 border-b" style={{ borderColor:'rgba(255,255,255,.07)' }}>
           <div className="flex items-start justify-between">
             <div>
@@ -210,7 +223,6 @@ function ClientDetail({ client, onClose, onUpdate }) {
 
         <div className="p-6 space-y-6">
 
-          {/* Info */}
           <div className="grid grid-cols-2 gap-3">
             {[
               ['Email',    client.email],
@@ -238,7 +250,6 @@ function ClientDetail({ client, onClose, onUpdate }) {
             )}
           </div>
 
-          {/* Payment status */}
           {client.has_maintenance && (
             <div className="rounded-xl p-4 space-y-3"
               style={{
@@ -274,7 +285,6 @@ function ClientDetail({ client, onClose, onUpdate }) {
                 }
               </div>
 
-              {/* Email actions */}
               <div className="pt-2 border-t flex flex-wrap gap-2" style={{ borderColor:'rgba(255,255,255,.07)' }}>
                 <p className="text-xs font-bold w-full" style={{ color:'rgba(160,176,200,.45)' }}>Enviar aviso por email:</p>
                 {[
@@ -282,9 +292,7 @@ function ClientDetail({ client, onClose, onUpdate }) {
                   { type:'overdue', label:'Pago vencido',        color:'#f97316' },
                   { type:'suspend', label:'Suspensión',          color:'#f87171' },
                 ].map(({ type, label, color }) => (
-                  <button key={type}
-                    disabled={sending === type}
-                    onClick={() => sendEmail(type)}
+                  <button key={type} disabled={sending === type} onClick={() => sendEmail(type)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
                     style={{ background:`${color}12`, color, border:`1px solid ${color}22` }}>
                     {sending === type
@@ -298,13 +306,12 @@ function ClientDetail({ client, onClose, onUpdate }) {
             </div>
           )}
 
-          {/* Notes */}
           <div>
             <p className="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2" style={{ color:'rgba(160,176,200,.45)' }}>
               <StickyNote size={13}/>Notas internas
             </p>
             <div className="flex gap-2 mb-3">
-              <input className="kv-input flex-1" placeholder="Agregar nota..." value={note}
+              <input style={{...inputStyle, flex:1, borderRadius:10}} placeholder="Agregar nota..." value={note}
                 onChange={e => setNote(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleAddNote()}/>
               <button onClick={handleAddNote} disabled={addingNote || !note.trim()}
@@ -343,13 +350,13 @@ function ClientDetail({ client, onClose, onUpdate }) {
 
 // ── Main page ─────────────────────────────────────────────────────────
 export default function AdminClients() {
-  const [clients,     setClients]     = useState([])
-  const [loading,     setLoading]     = useState(true)
-  const [showForm,    setShowForm]    = useState(false)
-  const [editing,     setEditing]     = useState(null)
-  const [viewing,     setViewing]     = useState(null)
+  const [clients,      setClients]      = useState([])
+  const [loading,      setLoading]      = useState(true)
+  const [showForm,     setShowForm]     = useState(false)
+  const [editing,      setEditing]      = useState(null)
+  const [viewing,      setViewing]      = useState(null)
   const [filterStatus, setFilterStatus] = useState('all')
-  const [search,      setSearch]      = useState('')
+  const [search,       setSearch]       = useState('')
 
   const load = () => {
     setLoading(true)
@@ -373,7 +380,9 @@ export default function AdminClients() {
 
   const filtered = clients.filter(c => {
     const matchStatus = filterStatus === 'all' || c.payment_status === filterStatus
-    const matchSearch = !search || c.name.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase()) || c.company?.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = !search || c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.email?.toLowerCase().includes(search.toLowerCase()) ||
+      c.company?.toLowerCase().includes(search.toLowerCase())
     return matchStatus && matchSearch
   })
 
@@ -393,10 +402,9 @@ export default function AdminClients() {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6">
-        <input className="kv-input max-w-xs" placeholder="Buscar cliente..." value={search}
-          onChange={e => setSearch(e.target.value)}/>
+        <input style={{...inputStyle, maxWidth:280, borderRadius:8}} placeholder="Buscar cliente..."
+          value={search} onChange={e => setSearch(e.target.value)}/>
         <div className="flex gap-2 flex-wrap">
           {[{ value:'all', label:'Todos' }, ...STATUSES].map(s => (
             <button key={s.value} onClick={() => setFilterStatus(s.value)}
@@ -486,9 +494,9 @@ export default function AdminClients() {
         </div>
       )}
 
-      {showForm    && <ClientForm onSave={handleCreate} onCancel={() => setShowForm(false)}/>}
-      {editing     && <ClientForm initial={editing} onSave={handleUpdate} onCancel={() => setEditing(null)}/>}
-      {viewing     && <ClientDetail client={viewing} onClose={() => { setViewing(null); load() }} onUpdate={() => { load(); setViewing(null) }}/>}
+      {showForm && <ClientForm onSave={handleCreate} onCancel={() => setShowForm(false)}/>}
+      {editing  && <ClientForm initial={editing} onSave={handleUpdate} onCancel={() => setEditing(null)}/>}
+      {viewing  && <ClientDetail client={viewing} onClose={() => { setViewing(null); load() }} onUpdate={() => { load(); setViewing(null) }}/>}
     </div>
   )
 }
