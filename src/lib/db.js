@@ -53,11 +53,13 @@ export const getClient = async (id) => {
   if (error) throw error; return data
 }
 export const createClient = async (c) => {
-  const { data, error } = await supabase.from('clients').insert([c]).select().single()
+  const { client_notes, ...payload } = c
+  const { data, error } = await supabase.from('clients').insert([payload]).select().single()
   if (error) throw error; return data
 }
 export const updateClient = async (id, c) => {
-  const { data, error } = await supabase.from('clients').update(c).eq('id', id).select().single()
+  const { client_notes, ...payload } = c
+  const { data, error } = await supabase.from('clients').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', id).select().single()
   if (error) throw error; return data
 }
 export const deleteClient = async (id) => {
