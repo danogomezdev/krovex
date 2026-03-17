@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Plus, Pencil, Trash2, X, Save, Users, ExternalLink,
-         Ban, RotateCcw, StickyNote, Send } from 'lucide-react'
+         Ban, RotateCcw, StickyNote, Send, ChevronDown } from 'lucide-react'
 import { getClients, createClient, updateClient, deleteClient, addNote, deleteNote } from '../../lib/db'
 import { sendPaymentWarning, sendOverdueNotice, sendSuspensionNotice } from '../../lib/email'
 import { format, parseISO, isPast, differenceInDays } from 'date-fns'
@@ -19,7 +19,7 @@ const CURRENCIES = ['ARS','USD','EUR']
 const EMPTY_CLIENT = {
   name:'', email:'', phone:'', company:'', site_url:'',
   has_maintenance:false, maintenance_price:'', currency:'ARS',
-  payment_due_date:'', payment_status:'development', notes:''
+  payment_due_date:'', payment_status:'development'
 }
 
 const inputStyle = {
@@ -59,8 +59,6 @@ function ClientForm({ initial, onSave, onCancel }) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-
-          {/* Datos personales */}
           <div>
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color:'#60A5FA' }}>Datos del cliente</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -78,7 +76,6 @@ function ClientForm({ initial, onSave, onCancel }) {
             </div>
           </div>
 
-          {/* Proyecto */}
           <div>
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color:'#60A5FA' }}>Proyecto</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -96,7 +93,6 @@ function ClientForm({ initial, onSave, onCancel }) {
             </div>
           </div>
 
-          {/* Mantenimiento */}
           <div className="rounded-xl p-4" style={{ background:'rgba(34,39,249,.06)', border:'1px solid rgba(34,39,249,.15)' }}>
             <label className="flex items-center gap-3 cursor-pointer mb-3">
               <input type="checkbox" checked={form.has_maintenance}
@@ -144,10 +140,10 @@ function ClientForm({ initial, onSave, onCancel }) {
 
 // ── Client detail panel ───────────────────────────────────────────────
 function ClientDetail({ client, onClose, onUpdate }) {
-  const [sending, setSending]   = useState(null)
-  const [note, setNote]         = useState('')
+  const [sending, setSending] = useState(null)
+  const [note, setNote] = useState('')
   const [addingNote, setAddingNote] = useState(false)
-  const [notes, setNotes]       = useState(client.client_notes || [])
+  const [notes, setNotes] = useState(client.client_notes || [])
 
   const st = STATUSES.find(s => s.value === client.payment_status) || STATUSES[0]
 
@@ -163,11 +159,11 @@ function ClientDetail({ client, onClose, onUpdate }) {
   }
 
   const suspend = async () => {
-    if (!confirm(`¿Suspender el sitio de ${client.name}? Se le enviará un aviso por email.`)) return
+    if (!confirm(`¿Suspender el sitio de ${client.name}?`)) return
     try {
       await updateClient(client.id, { payment_status:'suspended' })
       await sendSuspensionNotice(client)
-      toast.success('Cliente suspendido y email enviado')
+      toast.success('Cliente suspendido')
       onUpdate()
     } catch { toast.error('Error al suspender') }
   }
@@ -215,20 +211,15 @@ function ClientDetail({ client, onClose, onUpdate }) {
               {client.company && <p className="text-sm mt-0.5" style={{ color:'rgba(160,176,200,.5)' }}>{client.company}</p>}
             </div>
             <div className="flex items-center gap-2">
-              <span className={`badge ${st.cls}`}>{st.label}</span>
+              <span className={st.cls}>{st.label}</span>
               <button onClick={onClose} style={{ color:'rgba(160,176,200,.5)' }}><X size={18}/></button>
             </div>
           </div>
         </div>
 
         <div className="p-6 space-y-6">
-
           <div className="grid grid-cols-2 gap-3">
-            {[
-              ['Email',    client.email],
-              ['Teléfono', client.phone || '—'],
-              ['Sitio',    client.site_url],
-            ].map(([label, val]) => (
+            {[['Email', client.email], ['Teléfono', client.phone || '—'], ['Sitio', client.site_url]].map(([label, val]) => (
               <div key={label} className="rounded-xl p-3" style={{ background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.06)' }}>
                 <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color:'rgba(160,176,200,.42)' }}>{label}</p>
                 {label === 'Sitio' && val
@@ -265,40 +256,35 @@ function ClientDetail({ client, onClose, onUpdate }) {
                       : 'No configurado'}
                   </p>
                   {daysUntil !== null && (
-                    <p className="text-xs mt-0.5"
-                      style={{ color: isOverdue ? '#f87171' : daysUntil <= 3 ? '#facc15' : 'rgba(160,176,200,.5)' }}>
+                    <p className="text-xs mt-0.5" style={{ color: isOverdue ? '#f87171' : daysUntil <= 3 ? '#facc15' : 'rgba(160,176,200,.5)' }}>
                       {isOverdue ? `Vencido hace ${Math.abs(daysUntil)} días` : `Vence en ${daysUntil} días`}
                     </p>
                   )}
                 </div>
                 {client.payment_status === 'suspended'
-                  ? <button onClick={reactivate}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
+                  ? <button onClick={reactivate} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
                       style={{ background:'rgba(74,222,128,.15)', color:'#4ade80', border:'1px solid rgba(74,222,128,.25)' }}>
                       <RotateCcw size={14}/>Reactivar
                     </button>
-                  : <button onClick={suspend}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
+                  : <button onClick={suspend} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
                       style={{ background:'rgba(248,113,113,.13)', color:'#f87171', border:'1px solid rgba(248,113,113,.22)' }}>
                       <Ban size={14}/>Suspender sitio
                     </button>
                 }
               </div>
-
               <div className="pt-2 border-t flex flex-wrap gap-2" style={{ borderColor:'rgba(255,255,255,.07)' }}>
                 <p className="text-xs font-bold w-full" style={{ color:'rgba(160,176,200,.45)' }}>Enviar aviso por email:</p>
                 {[
                   { type:'warning', label:'Aviso 3 días antes', color:'#facc15' },
-                  { type:'overdue', label:'Pago vencido',        color:'#f97316' },
-                  { type:'suspend', label:'Suspensión',          color:'#f87171' },
+                  { type:'overdue', label:'Pago vencido', color:'#f97316' },
+                  { type:'suspend', label:'Suspensión', color:'#f87171' },
                 ].map(({ type, label, color }) => (
                   <button key={type} disabled={sending === type} onClick={() => sendEmail(type)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
                     style={{ background:`${color}12`, color, border:`1px solid ${color}22` }}>
                     {sending === type
                       ? <div className="w-3 h-3 border border-current/40 border-t-current rounded-full animate-spin"/>
-                      : <Send size={11}/>
-                    }
+                      : <Send size={11}/>}
                     {label}
                   </button>
                 ))}
@@ -341,9 +327,69 @@ function ClientDetail({ client, onClose, onUpdate }) {
               }
             </div>
           </div>
-
         </div>
       </div>
+    </div>
+  )
+}
+
+// ── Selector de estado inline en la tabla ────────────────────────────
+function StatusSelector({ client, onUpdate }) {
+  const [open, setOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const st = STATUSES.find(s => s.value === client.payment_status) || STATUSES[0]
+
+  const cambiar = async (nuevoEstado) => {
+    setSaving(true)
+    setOpen(false)
+    try {
+      await updateClient(client.id, { payment_status: nuevoEstado })
+      toast.success('Estado actualizado')
+      onUpdate()
+    } catch { toast.error('Error al actualizar estado') }
+    finally { setSaving(false) }
+  }
+
+  return (
+    <div style={{ position:'relative' }}>
+      <button
+        onClick={e => { e.stopPropagation(); setOpen(!open) }}
+        disabled={saving}
+        className={st.cls}
+        style={{ cursor:'pointer', display:'flex', alignItems:'center', gap:6, border:'none' }}
+      >
+        {saving ? <div className="w-3 h-3 border border-current/40 border-t-current rounded-full animate-spin"/> : null}
+        {st.label}
+        <ChevronDown size={11}/>
+      </button>
+      {open && (
+        <>
+          <div style={{ position:'fixed', inset:0, zIndex:40 }} onClick={() => setOpen(false)}/>
+          <div style={{
+            position:'absolute', top:'calc(100% + 6px)', left:0, zIndex:50,
+            background:'#0E1220', border:'1px solid rgba(77,166,255,.2)',
+            borderRadius:8, padding:4, minWidth:160,
+            boxShadow:'0 8px 32px rgba(0,0,0,.5)'
+          }}>
+            {STATUSES.map(s => (
+              <button key={s.value} onClick={() => cambiar(s.value)}
+                style={{
+                  display:'block', width:'100%', textAlign:'left',
+                  padding:'8px 12px', borderRadius:4, border:'none', cursor:'pointer',
+                  background: s.value === client.payment_status ? 'rgba(77,166,255,.1)' : 'transparent',
+                  fontFamily:'DM Sans, sans-serif', fontSize:13,
+                  color: s.value === client.payment_status ? '#4da6ff' : 'rgba(200,212,240,.7)',
+                  transition:'background .15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(77,166,255,.08)'}
+                onMouseLeave={e => e.currentTarget.style.background = s.value === client.payment_status ? 'rgba(77,166,255,.1)' : 'transparent'}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -380,13 +426,12 @@ export default function AdminClients() {
 
   const filtered = clients.filter(c => {
     const matchStatus = filterStatus === 'all' || c.payment_status === filterStatus
-    const matchSearch = !search || c.name.toLowerCase().includes(search.toLowerCase()) ||
+    const matchSearch = !search ||
+      c.name?.toLowerCase().includes(search.toLowerCase()) ||
       c.email?.toLowerCase().includes(search.toLowerCase()) ||
       c.company?.toLowerCase().includes(search.toLowerCase())
     return matchStatus && matchSearch
   })
-
-  const st = (s) => STATUSES.find(x => x.value === s) || STATUSES[0]
 
   return (
     <div>
@@ -437,7 +482,7 @@ export default function AdminClients() {
                 const isOverdue = c.payment_due_date && isPast(parseISO(c.payment_due_date)) && c.payment_status !== 'suspended'
                 const days = c.payment_due_date ? differenceInDays(parseISO(c.payment_due_date), new Date()) : null
                 return (
-                  <tr key={c.id} className="cursor-pointer" onClick={() => setViewing(c)}>
+                  <tr key={c.id} onClick={() => setViewing(c)} style={{ cursor:'pointer' }}>
                     <td>
                       <div className="font-semibold text-white">{c.name}</div>
                       <div className="text-xs" style={{ color:'rgba(160,176,200,.42)' }}>{c.company || c.email}</div>
@@ -472,10 +517,12 @@ export default function AdminClients() {
                         : <span className="text-xs" style={{ color:'rgba(160,176,200,.3)' }}>—</span>
                       }
                     </td>
-                    <td><span className={`badge ${st(c.payment_status).cls}`}>{st(c.payment_status).label}</span></td>
+                    <td onClick={e => e.stopPropagation()}>
+                      <StatusSelector client={c} onUpdate={load}/>
+                    </td>
                     <td onClick={e => e.stopPropagation()}>
                       <div className="flex gap-2">
-                        <button onClick={() => { setEditing(c); setShowForm(false) }}
+                        <button onClick={() => setEditing(c)}
                           className="w-8 h-8 rounded-lg flex items-center justify-center btn btn-g">
                           <Pencil size={13}/>
                         </button>
