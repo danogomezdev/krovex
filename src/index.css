@@ -467,24 +467,32 @@ select option {
 }
 
 /* ══════════════════════════
-   kv-input — input de notas en AdminClients
+   FIX inputs modal dark
 ══════════════════════════ */
-.kv-input {
-  width: 100%;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px;
-  padding: 10px 14px;
+.modal-bg input,
+.modal-bg select,
+.modal-bg textarea {
+  background: rgba(255,255,255,.04) !important;
+  color: #F8FAFF !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 6px !important;
+  padding: 10px 14px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 14px !important;
+  outline: none !important;
+  width: 100% !important;
+}
+.modal-bg input::placeholder,
+.modal-bg textarea::placeholder {
+  color: rgba(148,163,200,.35) !important;
+}
+.modal-bg input:focus,
+.modal-bg select:focus,
+.modal-bg textarea:focus {
+  border-color: rgba(37,99,235,.6) !important;
+  background: rgba(37,99,235,.06) !important;
+}
+.modal-bg select option {
+  background: #0E1220;
   color: #F8FAFF;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition: border-color .2s, background .2s;
-}
-.kv-input:focus {
-  border-color: rgba(37,99,235,.6);
-  background: rgba(37,99,235,.06);
-}
-.kv-input::placeholder {
-  color: rgba(148,163,200,.35);
 }
