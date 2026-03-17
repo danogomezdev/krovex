@@ -465,3 +465,26 @@ select option {
   background: white;
   color: var(--t1);
 }
+
+/* ══════════════════════════
+   kv-input — input de notas en AdminClients
+══════════════════════════ */
+.kv-input {
+  width: 100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #F8FAFF;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.kv-input:focus {
+  border-color: rgba(37,99,235,.6);
+  background: rgba(37,99,235,.06);
+}
+.kv-input::placeholder {
+  color: rgba(148,163,200,.35);
+}
