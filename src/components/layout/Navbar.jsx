@@ -5,8 +5,7 @@ import KrovexLogo from '../ui/KrovexLogo'
 import { useTheme } from '../../context/ThemeContext'
 
 const LINKS = [
-  {label:'Inicio',id:'hero'},{label:'Servicios',id:'servicios'},
-  {label:'Portfolio',id:'portfolio'},{label:'Contacto',id:'contacto'},
+  {label:'Inicio',id:'hero'},{label:'Sistemas',id:'sistemas'},{label:'Servicios',id:'servicios'},{label:'Contacto',id:'contacto'},
 ]
 
 export default function Navbar() {
