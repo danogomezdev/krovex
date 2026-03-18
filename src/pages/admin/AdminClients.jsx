@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import ReactDOM from 'react-dom'
 import { Plus, Pencil, Trash2, X, Save, Users, ExternalLink,
          Ban, RotateCcw, StickyNote, Send, ChevronDown } from 'lucide-react'
 import { getClients, createClient, updateClient, deleteClient, addNote, deleteNote } from '../../lib/db'
@@ -34,11 +35,93 @@ const inputStyle = {
   outline:'none',
 }
 
-// ── Form modal ─────────────────────────────────────────────────────────
+// ── Status selector con portal para que el dropdown no quede cortado ──
+function StatusSelector({ client, onUpdate }) {
+  const [open, setOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [pos, setPos] = useState({ top:0, left:0 })
+  const btnRef = useRef()
+  const st = STATUSES.find(s => s.value === client.payment_status) || STATUSES[0]
+
+  const handleOpen = (e) => {
+    e.stopPropagation()
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect()
+      setPos({ top: rect.bottom + 4, left: rect.left })
+    }
+    setOpen(v => !v)
+  }
+
+  const cambiar = async (nuevoEstado) => {
+    setSaving(true)
+    setOpen(false)
+    try {
+      await updateClient(client.id, { payment_status: nuevoEstado })
+      toast.success('Estado actualizado')
+      onUpdate()
+    } catch { toast.error('Error al actualizar estado') }
+    finally { setSaving(false) }
+  }
+
+  return (
+    <div>
+      <button ref={btnRef}
+        onClick={handleOpen}
+        disabled={saving}
+        className={st.cls}
+        style={{ cursor:'pointer', display:'flex', alignItems:'center', gap:6, border:'none', userSelect:'none' }}
+      >
+        {saving && <div style={{ width:10, height:10, border:'1.5px solid currentColor', borderTopColor:'transparent', borderRadius:'50%', animation:'spin .7s linear infinite' }}/>}
+        {st.label}
+        <ChevronDown size={11}/>
+      </button>
+
+      {open && ReactDOM.createPortal(
+        <>
+          <div style={{ position:'fixed', inset:0, zIndex:9998 }} onClick={() => setOpen(false)}/>
+          <div style={{
+            position:'fixed',
+            top: pos.top,
+            left: pos.left,
+            zIndex:9999,
+            background:'#0E1220',
+            border:'1px solid rgba(77,166,255,.25)',
+            borderRadius:10,
+            padding:6,
+            minWidth:170,
+            boxShadow:'0 12px 40px rgba(0,0,0,.7)',
+          }}>
+            {STATUSES.map(s => (
+              <button key={s.value} onClick={() => cambiar(s.value)}
+                style={{
+                  display:'block', width:'100%', textAlign:'left',
+                  padding:'9px 12px', borderRadius:6, border:'none', cursor:'pointer',
+                  background: s.value === client.payment_status ? 'rgba(77,166,255,.15)' : 'transparent',
+                  fontFamily:'DM Sans, sans-serif', fontSize:13,
+                  color: s.value === client.payment_status ? '#4da6ff' : 'rgba(200,212,240,.85)',
+                  transition:'background .12s',
+                }}
+                onMouseEnter={e => { if (s.value !== client.payment_status) e.currentTarget.style.background = 'rgba(77,166,255,.08)' }}
+                onMouseLeave={e => { if (s.value !== client.payment_status) e.currentTarget.style.background = 'transparent' }}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </>,
+        document.body
+      )}
+    </div>
+  )
+}
+
+// ── Form modal ────────────────────────────────────────────────────────
 function ClientForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_CLIENT)
   const [saving, setSaving] = useState(false)
-  const set = (k,v) => setForm(f => ({ ...f, [k]:v }))
+
+  // useCallback evita que el input pierda el foco al re-render
+  const set = useCallback((k, v) => setForm(f => ({ ...f, [k]: v })), [])
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setSaving(true)
@@ -55,7 +138,7 @@ function ClientForm({ initial, onSave, onCancel }) {
 
         <div className="flex items-center justify-between p-6 border-b" style={{ borderColor:'rgba(255,255,255,.07)' }}>
           <h2 className="text-lg font-black text-white">{initial ? 'Editar cliente' : 'Nuevo cliente'}</h2>
-          <button onClick={onCancel} style={{ color:'rgba(160,176,200,.5)' }}><X size={18}/></button>
+          <button onClick={onCancel} style={{ color:'rgba(160,176,200,.5)', background:'none', border:'none', cursor:'pointer' }}><X size={18}/></button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -102,7 +185,7 @@ function ClientForm({ initial, onSave, onCancel }) {
             </label>
             {form.has_maintenance && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
-                <div className="sm:col-span-1">
+                <div>
                   <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color:'rgba(160,176,200,.52)' }}>Precio</label>
                   <input type="number" style={inputStyle} placeholder="15000"
                     value={form.maintenance_price} onChange={e => set('maintenance_price', e.target.value)}/>
@@ -144,7 +227,6 @@ function ClientDetail({ client, onClose, onUpdate }) {
   const [note, setNote] = useState('')
   const [addingNote, setAddingNote] = useState(false)
   const [notes, setNotes] = useState(client.client_notes || [])
-
   const st = STATUSES.find(s => s.value === client.payment_status) || STATUSES[0]
 
   const sendEmail = async (type) => {
@@ -212,7 +294,7 @@ function ClientDetail({ client, onClose, onUpdate }) {
             </div>
             <div className="flex items-center gap-2">
               <span className={st.cls}>{st.label}</span>
-              <button onClick={onClose} style={{ color:'rgba(160,176,200,.5)' }}><X size={18}/></button>
+              <button onClick={onClose} style={{ color:'rgba(160,176,200,.5)', background:'none', border:'none', cursor:'pointer' }}><X size={18}/></button>
             </div>
           </div>
         </div>
@@ -225,7 +307,7 @@ function ClientDetail({ client, onClose, onUpdate }) {
                 {label === 'Sitio' && val
                   ? <a href={val} target="_blank" rel="noopener noreferrer"
                       className="text-sm font-semibold hover:underline flex items-center gap-1" style={{ color:'#60A5FA' }}>
-                      <ExternalLink size={11}/>{val.replace(/^https?:\/\//,'')}
+                      <ExternalLink size={11}/>{val.replace(/^https?:\/\//, '')}
                     </a>
                   : <p className="text-sm font-semibold text-white truncate">{val || '—'}</p>
                 }
@@ -243,17 +325,12 @@ function ClientDetail({ client, onClose, onUpdate }) {
 
           {client.has_maintenance && (
             <div className="rounded-xl p-4 space-y-3"
-              style={{
-                background: isOverdue ? 'rgba(248,113,113,.07)' : 'rgba(34,39,249,.06)',
-                border: `1px solid ${isOverdue ? 'rgba(248,113,113,.22)' : 'rgba(34,39,249,.15)'}`,
-              }}>
+              style={{ background: isOverdue ? 'rgba(248,113,113,.07)' : 'rgba(34,39,249,.06)', border: `1px solid ${isOverdue ? 'rgba(248,113,113,.22)' : 'rgba(34,39,249,.15)'}` }}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color:'rgba(160,176,200,.45)' }}>Próximo vencimiento</p>
                   <p className="font-bold text-white">
-                    {client.payment_due_date
-                      ? format(parseISO(client.payment_due_date), "d 'de' MMMM yyyy", { locale:es })
-                      : 'No configurado'}
+                    {client.payment_due_date ? format(parseISO(client.payment_due_date), "d 'de' MMMM yyyy", { locale:es }) : 'No configurado'}
                   </p>
                   {daysUntil !== null && (
                     <p className="text-xs mt-0.5" style={{ color: isOverdue ? '#f87171' : daysUntil <= 3 ? '#facc15' : 'rgba(160,176,200,.5)' }}>
@@ -263,28 +340,26 @@ function ClientDetail({ client, onClose, onUpdate }) {
                 </div>
                 {client.payment_status === 'suspended'
                   ? <button onClick={reactivate} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
-                      style={{ background:'rgba(74,222,128,.15)', color:'#4ade80', border:'1px solid rgba(74,222,128,.25)' }}>
+                      style={{ background:'rgba(74,222,128,.15)', color:'#4ade80', border:'1px solid rgba(74,222,128,.25)', cursor:'pointer' }}>
                       <RotateCcw size={14}/>Reactivar
                     </button>
                   : <button onClick={suspend} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
-                      style={{ background:'rgba(248,113,113,.13)', color:'#f87171', border:'1px solid rgba(248,113,113,.22)' }}>
-                      <Ban size={14}/>Suspender sitio
+                      style={{ background:'rgba(248,113,113,.13)', color:'#f87171', border:'1px solid rgba(248,113,113,.22)', cursor:'pointer' }}>
+                      <Ban size={14}/>Suspender
                     </button>
                 }
               </div>
               <div className="pt-2 border-t flex flex-wrap gap-2" style={{ borderColor:'rgba(255,255,255,.07)' }}>
                 <p className="text-xs font-bold w-full" style={{ color:'rgba(160,176,200,.45)' }}>Enviar aviso por email:</p>
                 {[
-                  { type:'warning', label:'Aviso 3 días antes', color:'#facc15' },
+                  { type:'warning', label:'Aviso 3 días', color:'#facc15' },
                   { type:'overdue', label:'Pago vencido', color:'#f97316' },
-                  { type:'suspend', label:'Suspensión', color:'#f87171' },
+                  { type:'suspend', label:'Suspensión',   color:'#f87171' },
                 ].map(({ type, label, color }) => (
                   <button key={type} disabled={sending === type} onClick={() => sendEmail(type)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
-                    style={{ background:`${color}12`, color, border:`1px solid ${color}22` }}>
-                    {sending === type
-                      ? <div className="w-3 h-3 border border-current/40 border-t-current rounded-full animate-spin"/>
-                      : <Send size={11}/>}
+                    style={{ background:`${color}12`, color, border:`1px solid ${color}22`, cursor:'pointer' }}>
+                    {sending === type ? <div style={{ width:10, height:10, border:'1.5px solid currentColor', borderTopColor:'transparent', borderRadius:'50%', animation:'spin .7s linear infinite' }}/> : <Send size={11}/>}
                     {label}
                   </button>
                 ))}
@@ -300,8 +375,7 @@ function ClientDetail({ client, onClose, onUpdate }) {
               <input style={{...inputStyle, flex:1, borderRadius:10}} placeholder="Agregar nota..." value={note}
                 onChange={e => setNote(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleAddNote()}/>
-              <button onClick={handleAddNote} disabled={addingNote || !note.trim()}
-                className="btn btn-p px-4 py-2 text-sm flex-shrink-0">
+              <button onClick={handleAddNote} disabled={addingNote || !note.trim()} className="btn btn-p px-4 py-2 text-sm flex-shrink-0">
                 <Plus size={15}/>
               </button>
             </div>
@@ -313,12 +387,8 @@ function ClientDetail({ client, onClose, onUpdate }) {
                       style={{ background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.06)' }}>
                       <p className="text-sm flex-1 leading-relaxed" style={{ color:'rgba(160,176,200,.82)' }}>{n.content}</p>
                       <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                        <span className="text-xs" style={{ color:'rgba(160,176,200,.3)' }}>
-                          {format(new Date(n.created_at), 'd MMM', { locale:es })}
-                        </span>
-                        <button onClick={() => handleDeleteNote(n.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity"
-                          style={{ color:'rgba(248,113,113,.6)' }}>
+                        <span className="text-xs" style={{ color:'rgba(160,176,200,.3)' }}>{format(new Date(n.created_at), 'd MMM', { locale:es })}</span>
+                        <button onClick={() => handleDeleteNote(n.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color:'rgba(248,113,113,.6)', background:'none', border:'none', cursor:'pointer' }}>
                           <X size={12}/>
                         </button>
                       </div>
@@ -329,67 +399,6 @@ function ClientDetail({ client, onClose, onUpdate }) {
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-
-// ── Selector de estado inline en la tabla ────────────────────────────
-function StatusSelector({ client, onUpdate }) {
-  const [open, setOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const st = STATUSES.find(s => s.value === client.payment_status) || STATUSES[0]
-
-  const cambiar = async (nuevoEstado) => {
-    setSaving(true)
-    setOpen(false)
-    try {
-      await updateClient(client.id, { payment_status: nuevoEstado })
-      toast.success('Estado actualizado')
-      onUpdate()
-    } catch { toast.error('Error al actualizar estado') }
-    finally { setSaving(false) }
-  }
-
-  return (
-    <div style={{ position:'relative' }}>
-      <button
-        onClick={e => { e.stopPropagation(); setOpen(!open) }}
-        disabled={saving}
-        className={st.cls}
-        style={{ cursor:'pointer', display:'flex', alignItems:'center', gap:6, border:'none' }}
-      >
-        {saving ? <div className="w-3 h-3 border border-current/40 border-t-current rounded-full animate-spin"/> : null}
-        {st.label}
-        <ChevronDown size={11}/>
-      </button>
-      {open && (
-        <>
-          <div style={{ position:'fixed', inset:0, zIndex:40 }} onClick={() => setOpen(false)}/>
-          <div style={{
-            position:'absolute', top:'calc(100% + 6px)', left:0, zIndex:50,
-            background:'#0E1220', border:'1px solid rgba(77,166,255,.2)',
-            borderRadius:8, padding:4, minWidth:160,
-            boxShadow:'0 8px 32px rgba(0,0,0,.5)'
-          }}>
-            {STATUSES.map(s => (
-              <button key={s.value} onClick={() => cambiar(s.value)}
-                style={{
-                  display:'block', width:'100%', textAlign:'left',
-                  padding:'8px 12px', borderRadius:4, border:'none', cursor:'pointer',
-                  background: s.value === client.payment_status ? 'rgba(77,166,255,.1)' : 'transparent',
-                  fontFamily:'DM Sans, sans-serif', fontSize:13,
-                  color: s.value === client.payment_status ? '#4da6ff' : 'rgba(200,212,240,.7)',
-                  transition:'background .15s'
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(77,166,255,.08)'}
-                onMouseLeave={e => e.currentTarget.style.background = s.value === client.payment_status ? 'rgba(77,166,255,.1)' : 'transparent'}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   )
 }
@@ -440,9 +449,7 @@ export default function AdminClients() {
           <h1 className="text-3xl font-black text-white mb-1">Clientes</h1>
           <p style={{ color:'rgba(160,176,200,.5)' }}>{clients.length} clientes registrados</p>
         </div>
-        <button onClick={() => setShowForm(true)}
-          className="btn btn-p flex items-center gap-2 px-5 py-3 text-sm"
-          style={{ boxShadow:'0 0 20px rgba(34,39,249,.28)' }}>
+        <button onClick={() => setShowForm(true)} className="btn btn-p flex items-center gap-2 px-5 py-3 text-sm" style={{ boxShadow:'0 0 20px rgba(34,39,249,.28)' }}>
           <Plus size={15}/>Nuevo cliente
         </button>
       </div>
@@ -484,14 +491,21 @@ export default function AdminClients() {
                 return (
                   <tr key={c.id} onClick={() => setViewing(c)} style={{ cursor:'pointer' }}>
                     <td>
-                      <div className="font-semibold text-white">{c.name}</div>
-                      <div className="text-xs" style={{ color:'rgba(160,176,200,.42)' }}>{c.company || c.email}</div>
+                      <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+                        <div style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg,#4da6ff,#2563EB)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:800, color:'white', flexShrink:0 }}>
+                          {c.name?.[0]?.toUpperCase()}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight:600, color:'var(--t1)', fontSize:13.5 }}>{c.name}</div>
+                          <div style={{ fontSize:11, color:'var(--t4)' }}>{c.company || c.email}</div>
+                        </div>
+                      </div>
                     </td>
                     <td onClick={e => e.stopPropagation()}>
                       {c.site_url
                         ? <a href={c.site_url} target="_blank" rel="noopener noreferrer"
                             className="flex items-center gap-1 text-xs hover:underline" style={{ color:'#60A5FA' }}>
-                            <ExternalLink size={11}/>{c.site_url.replace(/^https?:\/\//,'').slice(0,22)}
+                            <ExternalLink size={11}/>{c.site_url.replace(/^https?:\/\//, '').slice(0, 22)}
                           </a>
                         : <span className="text-xs" style={{ color:'rgba(160,176,200,.3)' }}>—</span>
                       }
@@ -522,13 +536,11 @@ export default function AdminClients() {
                     </td>
                     <td onClick={e => e.stopPropagation()}>
                       <div className="flex gap-2">
-                        <button onClick={() => setEditing(c)}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center btn btn-g">
+                        <button onClick={() => setEditing(c)} className="w-8 h-8 rounded-lg flex items-center justify-center btn btn-g">
                           <Pencil size={13}/>
                         </button>
-                        <button onClick={() => handleDelete(c.id)}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center"
-                          style={{ background:'rgba(248,113,113,.1)', border:'1px solid rgba(248,113,113,.2)', color:'#f87171' }}>
+                        <button onClick={() => handleDelete(c.id)} className="w-8 h-8 rounded-lg flex items-center justify-center"
+                          style={{ background:'rgba(248,113,113,.1)', border:'1px solid rgba(248,113,113,.2)', color:'#f87171', cursor:'pointer' }}>
                           <Trash2 size={13}/>
                         </button>
                       </div>
