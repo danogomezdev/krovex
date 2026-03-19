@@ -4,6 +4,7 @@ import { ExternalLink, ChevronDown, ChevronUp, Eye, Copy, Check, Building2, Hear
 const SISTEMAS = [
   {
     id: 'cobranzas',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/cobranzas%20demo%20captura.png',
     icon: Building2,
     nombre: 'Krovex Cobranzas',
     rubro: 'Clubes · Asociaciones · Mutuales',
@@ -26,6 +27,7 @@ const SISTEMAS = [
   },
   {
     id: 'salud',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/salud%20captura%20demo.png',
     icon: Heart,
     nombre: 'Krovex Salud',
     rubro: 'Clínicas · Consultorios · Centros de salud',
@@ -48,6 +50,7 @@ const SISTEMAS = [
   },
   {
     id: 'alojamientos',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/alojamientos%20captura%20demo.png',
     icon: Hotel,
     nombre: 'Krovex Alojamientos',
     rubro: 'Hoteles · Cabañas · Hosterías · Apart',
@@ -70,6 +73,7 @@ const SISTEMAS = [
   },
   {
     id: 'ecommerce',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/ecommerce%20demo%20captura.png',
     icon: ShoppingBag,
     nombre: 'Krovex Ecommerce',
     rubro: 'Tiendas · Comercios · Distribuidores',
@@ -92,6 +96,7 @@ const SISTEMAS = [
   },
   {
     id: 'gym',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/gym%20captura%20demo.png',
     icon: Dumbbell,
     nombre: 'Krovex Gym',
     rubro: 'Gimnasios · Estudios · CrossFit · Pilates',
@@ -114,6 +119,7 @@ const SISTEMAS = [
   },
   {
     id: 'logistica',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/logistica%20demo%20captura.png',
     icon: Truck,
     nombre: 'Krovex Logística',
     rubro: 'Transportistas · Distribuidoras · Couriers',
@@ -136,6 +142,7 @@ const SISTEMAS = [
   },
   {
     id: 'canchas',
+    imagen: 'https://dzjjendsxomovfjwnwyq.supabase.co/storage/v1/object/public/screenshots/Canchas%20demo%20foto.png',
     icon: Landmark,
     nombre: 'Krovex Canchas',
     rubro: 'Pádel · Fútbol 5 · Tenis · Complejos deportivos',
@@ -197,13 +204,17 @@ function SistemaCard({ s }) {
         alignItems:'flex-start',
         gap:16,
       }} onClick={() => setOpen(o => !o)}>
-        {/* Icono */}
+        {/* Icono o thumbnail */}
         <div style={{
           width:46,height:46,borderRadius:8,flexShrink:0,
           display:'flex',alignItems:'center',justifyContent:'center',
           background:s.colorLight,border:`1px solid ${s.colorBorder}`,
+          overflow:'hidden',
         }}>
-          <Icon size={20} style={{color:s.color}}/>
+          {s.imagen
+            ? <img src={s.imagen} alt={s.nombre} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+            : <Icon size={20} style={{color:s.color}}/>
+          }
         </div>
 
         {/* Info */}
@@ -244,7 +255,19 @@ function SistemaCard({ s }) {
       {/* Expandido */}
       {open && (
         <div style={{borderTop:`1px solid var(--b0)`}}>
-          <div style={{padding:'24px 24px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}} className="sistema-inner">
+          <div style={{padding:'24px 24px',display:'flex',flexDirection:'column',gap:20}}>
+            {/* Screenshot */}
+            {s.imagen && (
+              <div style={{
+                borderRadius:8,overflow:'hidden',
+                border:`1px solid ${s.colorBorder}`,
+                maxHeight:280,
+              }}>
+                <img src={s.imagen} alt={s.nombre} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'top'}}/>
+              </div>
+            )}
+
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}} className="sistema-inner">
             <style>{`@media(max-width:640px){.sistema-inner{grid-template-columns:1fr!important}}`}</style>
 
             {/* Descripción + features */}
@@ -335,6 +358,7 @@ function SistemaCard({ s }) {
               </div>
             </div>
           </div>
+            </div>
         </div>
       )}
     </div>
