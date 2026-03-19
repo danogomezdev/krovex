@@ -406,7 +406,7 @@ body {
 }
 
 /* Glow del logo en light */
-[data-theme="light"] @keyframes glow-k {
+@keyframes glow-k {
   0%,100% { box-shadow: 0 0 14px rgba(37,99,235,.25), 0 0 28px rgba(37,99,235,.08); }
   50%      { box-shadow: 0 0 20px rgba(37,99,235,.4),  0 0 40px rgba(37,99,235,.15); }
 }

@@ -74,13 +74,13 @@ export default function Hero() {
 
             {/* Headline */}
             <div style={{marginBottom:22,animation:'fadeUp .7s ease .1s both'}}>
-              <div className="bebas gw" style={{fontSize:'clamp(52px,8vw,96px)',lineHeight:.88,marginBottom:4}}>
-                Precisión en
+              <div className="bebas gw" style={{fontSize:'clamp(42px,6.5vw,78px)',lineHeight:.92,marginBottom:4}}>
+                Precisión
               </div>
-              <div className="bebas gk" style={{fontSize:'clamp(52px,8vw,96px)',lineHeight:.88,marginBottom:4}}>
+              <div className="bebas gk" style={{fontSize:'clamp(42px,6.5vw,78px)',lineHeight:.92,marginBottom:4}}>
                 Web & Software
               </div>
-              <div className="bebas gw" style={{fontSize:'clamp(52px,8vw,96px)',lineHeight:.88}}>
+              <div className="bebas gw" style={{fontSize:'clamp(42px,6.5vw,78px)',lineHeight:.92}}>
                 Development.
               </div>
             </div>
