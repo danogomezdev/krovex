@@ -12,7 +12,7 @@ export default function Footer() {
           <div>
             <KrovexLogo size={32} textSize="lg"/>
             <p style={{marginTop:16,fontSize:13.5,lineHeight:1.78,color:'var(--t4)',maxWidth:280}}>
-              Desarrollo web y software profesional para empresas y emprendedores que quieren resultados reales.
+              Desarrollo web y software profesional para empresas y emprendedores.
             </p>
             <div style={{display:'flex',gap:9,marginTop:20}}>
               {[Github,Linkedin,Instagram,Mail].map((Icon,i)=>(
@@ -37,7 +37,7 @@ export default function Footer() {
           <div>
             <p className="mono" style={{fontSize:9,color:'var(--t4)',letterSpacing:'.16em',textTransform:'uppercase',marginBottom:18}}>Contacto</p>
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <p style={{fontSize:13.5,color:'var(--t4)'}}>hello@krovex.dev</p>
+              <p style={{fontSize:13.5,color:'var(--t4)'}}>krovex.dev@gmail.com</p>
               <p style={{fontSize:13.5,color:'var(--t4)'}}>Argentina</p>
               <span className="badge b-green" style={{width:'fit-content',marginTop:4}}>
                 <span className="pdot" style={{background:'var(--green)'}}/>Disponible

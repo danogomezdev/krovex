@@ -37,7 +37,7 @@ export default function Contact() {
           {/* Left */}
           <div style={{display:'flex',flexDirection:'column',gap:12}}>
             {[
-              {icon:Mail,   label:'Email',     val:'hello@krovex.dev', sub:'Respondemos en <24hs'},
+              {icon:Mail,   label:'Email',     val:'krovex.dev@gmail.com', sub:'Respondemos en <24hs'},
               {icon:MapPin, label:'Ubicación', val:'Argentina',        sub:'Trabajo remoto · Worldwide'},
             ].map(({icon:Icon,label,val,sub})=>(
               <div key={label} className="card-flat" style={{padding:'16px 18px',display:'flex',gap:14,alignItems:'flex-start'}}>
