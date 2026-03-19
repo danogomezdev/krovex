@@ -22,7 +22,7 @@ const SISTEMAS = [
       'Reportes de morosidad',
       'Multi-categoría de socios',
     ],
-    demo: { url: 'https://cobranzas.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://cobranzas.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'MercadoPago'],
   },
   {
@@ -45,7 +45,7 @@ const SISTEMAS = [
       'Recetas digitales',
       'Portal del paciente',
     ],
-    demo: { url: 'https://salud.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://salud.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'WhatsApp API'],
   },
   {
@@ -68,7 +68,7 @@ const SISTEMAS = [
       'Portal del huésped',
       'Calendario de disponibilidad',
     ],
-    demo: { url: 'https://alojamientos.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://alojamientos.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'MercadoPago'],
   },
   {
@@ -91,7 +91,7 @@ const SISTEMAS = [
       'Panel de pedidos admin',
       'Sin comisiones extras',
     ],
-    demo: { url: 'https://ecommerce.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://ecommerce.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'MercadoPago'],
   },
   {
@@ -114,7 +114,7 @@ const SISTEMAS = [
       'Control de inventario',
       'Portal del miembro',
     ],
-    demo: { url: 'https://gym.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://gym.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'QR Code'],
   },
   {
@@ -137,7 +137,7 @@ const SISTEMAS = [
       'Reportes de entregas',
       'Portal del cliente',
     ],
-    demo: { url: 'https://logistica.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://logistica.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'Mapas'],
   },
   {
@@ -160,7 +160,7 @@ const SISTEMAS = [
       'MercadoPago integrado',
       'Portal del jugador',
     ],
-    demo: { url: 'https://canchas.krovex.dev', user: 'demo@krovex.dev', pass: 'krovex2025' },
+    demo: { url: 'https://canchas.krovex.dev', user: 'demo@krovex.dev', pass: 'demo123' },
     tech: ['React', 'Supabase', 'MercadoPago'],
   },
 ]
