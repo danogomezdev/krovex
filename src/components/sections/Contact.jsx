@@ -12,7 +12,7 @@ export default function Contact() {
   const handleSubmit=async e=>{
     e.preventDefault();setSending(true);setErr('')
     try{ await sendContactEmail(form); setSent(true); setForm({name:'',email:'',service:'',message:''}) }
-    catch{ setErr('Error al enviar. Escribinos a hello@krovex.dev') }
+    catch{ setErr('Error al enviar. Escribinos a krovex.dev@gmail.com') }
     finally{ setSending(false) }
   }
 
